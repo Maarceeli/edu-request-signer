@@ -1,4 +1,4 @@
-const uuid = require('uuid/v4');
+const { v4: uuid } = require('uuid');
 const {getSignatureValues} = require("@wulkanowy/uonet-request-signer-node-hebe");
 
 function getOrThrow(context, name) {

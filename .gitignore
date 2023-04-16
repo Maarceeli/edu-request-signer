@@ -71,3 +71,4 @@ android/lib/src/main/gen
 
 # Ignore Gradle build output directory
 build
+.DS_Store
