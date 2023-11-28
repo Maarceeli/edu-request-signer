@@ -1,6 +1,46 @@
 plugins {
     id 'java'
+    id 'maven-publish'
     id 'org.jetbrains.kotlin.jvm'
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+publishing {
+    publications {
+        hebeJvm(MavenPublication) {
+            from components.java
+            artifactId "hebe-jvm"
+            version = rootProject.version
+
+            pom {
+                name = 'UONET+ Request Signer'
+                url = 'https://github.com/wulkanowy/uonet-request-signer'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://github.com/wulkanowy/uonet-request-signer/blob/master/LICENSE'
+                    }
+                }
+                scm {
+                    connection = 'https://github.com/wulkanowy/uonet-request-signer.git'
+                    developerConnection = 'git@github.com:wulkanowy/uonet-request-signer.git'
+                    url = 'https://github.com/wulkanowy/uonet-request-signer'
+                }
+            }
+        }
+    }
+
+    if (System.getenv("MAVEN_SIGNING_KEY")) {
+        signing {
+            def signingKey = System.getenv("MAVEN_SIGNING_KEY") ?: ""
+            def signingPassword = System.getenv("MAVEN_SIGNING_PASSWORD")
+            useInMemoryPgpKeys(new String(signingKey.decodeBase64()), signingPassword)
+            sign publishing.publications.hebeJvm
+        }
+    }
 }
 
 dependencies {

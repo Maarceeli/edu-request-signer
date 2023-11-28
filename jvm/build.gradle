@@ -7,11 +7,12 @@ publishing {
     publications {
         jvm(MavenPublication) {
             from components.java
+            artifactId "jvm"
             version = rootProject.version
 
             pom {
                 name = 'UONET+ Request Signer'
-                url = 'https://github.com/uonet-request-signer'
+                url = 'https://github.com/wulkanowy/uonet-request-signer'
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
@@ -26,9 +27,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'https://github.com/uonet-request-signer.git'
-                    developerConnection = 'git@github.com:uonet-request-signer.git'
-                    url = 'https://github.com/uonet-request-signer'
+                    connection = 'https://github.com/wulkanowy/uonet-request-signer.git'
+                    developerConnection = 'git@github.com:wulkanowy/uonet-request-signer.git'
+                    url = 'https://github.com/wulkanowy/uonet-request-signer'
                 }
             }
         }

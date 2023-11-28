@@ -1,14 +1,26 @@
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.7.20'
+    id "io.github.gradle-nexus.publish-plugin" version "1.3.0"
     id 'maven-publish'
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+            username = System.getenv("MAVEN_USERNAME")
+            password = System.getenv("MAVEN_PASSWORD")
+        }
+    }
 }
 
 allprojects {
     apply plugin: 'java'
 
     version = "0.1.0-SNAPSHOT"
-    group = "io.github.wulkanowy"
+    group = "io.github.wulkanowy.signer"
 
     repositories {
         mavenCentral()
@@ -35,7 +47,7 @@ subprojects {
 
     jacocoTestReport {
         reports {
-            xml.enabled true
+            xml.getRequired().set(true)
         }
     }
 
@@ -43,19 +55,26 @@ subprojects {
         testLogging.showStandardStreams = false
     }
 
-    group = "io.github.wulkanowy.signer"
     if (project.plugins.hasPlugin('java')) {
-        task sourcesJar(type: Jar, dependsOn: classes) {
-            classifier = 'sources'
+        tasks.register('sourcesJar', Jar) {
+            dependsOn classes
+            getArchiveClassifier().set("sources")
             from sourceSets.main.allSource
         }
-        task javadocJar(type: Jar, dependsOn: javadoc) {
-            classifier = 'javadoc'
+        tasks.register('javadocJar', Jar) {
+            dependsOn javadoc
+            getArchiveClassifier().set("javadoc")
             from javadoc.destinationDir
         }
         artifacts {
             archives sourcesJar
             archives javadocJar
+        }
+    }
+
+    javadoc {
+        if (JavaVersion.current().isJava9Compatible()) {
+            options.addBooleanOption('html5', true)
         }
     }
 }
