@@ -1,12 +1,9 @@
-# UONET+ (hebe) request signer for Python
+# eduVULCAN request signer for Python
 
-[![pypi](https://img.shields.io/pypi/v/uonet-request-signer-hebe.svg?style=flat-square)](https://pypi.org/project/uonet-request-signer-hebe/)
 
 ## Installation
 
-```console
-$ pip install -U uonet-request-signer-hebe
-```
+Run setup.py
 
 ## Usage
 
