@@ -5,6 +5,10 @@ import json
 import re
 import urllib
 from datetime import datetime
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives.serialization import load_der_private_key
+from cryptography.hazmat.backends import default_backend
 
 
 def get_encoded_path(full_url):
@@ -39,13 +43,25 @@ def get_headers_list(body, digest, canonical_url, timestamp):
 
 
 def get_signature(data, private_key):
+    # Convert data to a string representatio
     data_str = (
         json.dumps(data)
-        if isinstance(data, dict) or isinstance(data, list)
+        if isinstance(data, (dict, list))
         else str(data)
     )
-    pkcs8 = crypto.load_privatekey(crypto.FILETYPE_ASN1, base64.b64decode(private_key))
-    signature = crypto.sign(pkcs8, bytes(data_str, "utf-8"), "RSA-SHA256")
+    
+    # Decode the base64 private key and load it
+    private_key_bytes = base64.b64decode(private_key)
+    pkcs8_key = load_der_private_key(private_key_bytes, password=None, backend=default_backend())
+    
+    # Sign the data
+    signature = pkcs8_key.sign(
+        bytes(data_str, "utf-8"),
+        padding.PKCS1v15(),
+        hashes.SHA256()
+    )
+    
+    # Encode the signature in base64 and return
     return base64.b64encode(signature).decode("utf-8")
 
 
